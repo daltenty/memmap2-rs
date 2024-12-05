@@ -1,5 +1,3 @@
-extern crate libc;
-
 use std::fs::File;
 use std::mem::ManuallyDrop;
 use std::os::unix::io::{FromRawFd, RawFd};
