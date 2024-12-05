@@ -1329,7 +1329,7 @@ impl MmapMut {
     ///
     /// See [madvise()](https://man7.org/linux/man-pages/man2/madvise.2.html) map page.
     #[cfg(unix)]
-    pub fn unchecked_advise_range(
+    pub unsafe fn unchecked_advise_range(
         &self,
         advice: UncheckedAdvice,
         offset: usize,
