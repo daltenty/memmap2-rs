@@ -425,9 +425,6 @@ impl MmapOptions {
     /// # Example
     ///
     /// ```
-    /// # extern crate memmap2;
-    /// # extern crate tempfile;
-    /// #
     /// use std::fs::OpenOptions;
     /// use std::path::PathBuf;
     ///
@@ -680,9 +677,6 @@ impl Mmap {
     /// # Example
     ///
     /// ```
-    /// # extern crate memmap2;
-    /// # extern crate tempfile;
-    /// #
     /// use memmap2::Mmap;
     /// use std::ops::DerefMut;
     /// use std::io::Write;
@@ -892,9 +886,6 @@ impl MmapRaw {
     /// # Example
     ///
     /// ```
-    /// # extern crate memmap2;
-    /// # extern crate tempfile;
-    /// #
     /// use std::fs::OpenOptions;
     /// use std::io::Write;
     /// use std::path::PathBuf;
@@ -1117,9 +1108,6 @@ impl MmapMut {
     /// # Example
     ///
     /// ```
-    /// # extern crate memmap2;
-    /// # extern crate tempfile;
-    /// #
     /// use std::fs::OpenOptions;
     /// use std::path::PathBuf;
     ///
@@ -1168,9 +1156,6 @@ impl MmapMut {
     /// # Example
     ///
     /// ```
-    /// # extern crate memmap2;
-    /// # extern crate tempfile;
-    /// #
     /// use std::fs::OpenOptions;
     /// use std::io::Write;
     /// use std::path::PathBuf;
@@ -1244,8 +1229,6 @@ impl MmapMut {
     /// # Example
     ///
     /// ```
-    /// # extern crate memmap2;
-    /// #
     /// use std::io::Write;
     /// use std::path::PathBuf;
     ///
@@ -1463,8 +1446,6 @@ impl RemapOptions {
 
 #[cfg(test)]
 mod test {
-    extern crate tempfile;
-
     #[cfg(unix)]
     use crate::advice::Advice;
     use std::fs::{File, OpenOptions};
@@ -1968,8 +1949,6 @@ mod test {
     #[test]
     #[cfg(feature = "stable_deref_trait")]
     fn owning_ref() {
-        extern crate owning_ref;
-
         let mut map = MmapMut::map_anon(128).unwrap();
         map[10] = 42;
         let owning = owning_ref::OwningRef::new(map);
