@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- Fix huge page mappings with non-default page-bits.
 
 ## [0.9.5] - 2024-09-13
 ### Added
