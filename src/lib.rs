@@ -253,7 +253,7 @@ impl MmapOptions {
         //
         // The code below is essentially the same as in Rust's std:
         // https://github.com/rust-lang/rust/blob/db78ab70a88a0a5e89031d7ee4eccec835dcdbde/library/alloc/src/raw_vec.rs#L495
-        if mem::size_of::<usize>() < 8 && len > isize::MAX as u64 {
+        if len > isize::MAX as u64 {
             return Err(Error::new(
                 ErrorKind::InvalidData,
                 "memory map length overflows isize",
@@ -543,12 +543,7 @@ impl MmapOptions {
         let len = self.len.unwrap_or(0);
 
         // See get_len() for details.
-        if mem::size_of::<usize>() < 8 && len > isize::MAX as usize {
-            return Err(Error::new(
-                ErrorKind::InvalidData,
-                "memory map length overflows isize",
-            ));
-        }
+        let len = Self::validate_len(len as u64)?;
 
         MmapInner::map_anon(len, self.stack, self.populate, self.huge)
             .map(|inner| MmapMut { inner })
