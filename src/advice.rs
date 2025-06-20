@@ -234,7 +234,7 @@ pub enum Advice {
     ZeroWiredPages = libc::MADV_ZERO_WIRED_PAGES,
 }
 
-/// Values supported by [`Mmap::unsafe_advise`][crate::Mmap::unsafe_advise] and [`MmapMut::unsafe_advise`][crate::MmapMut::unsafe_advise] functions.
+/// Values supported by [`Mmap::unchecked_advise`][crate::Mmap::unchecked_advise] and [`MmapMut::unchecked_advise`][crate::MmapMut::unchecked_advise] functions.
 ///
 /// These flags can be passed to the [madvise (2)][man_page] system call
 /// and effects on the mapped pages which are conceptually writes,
