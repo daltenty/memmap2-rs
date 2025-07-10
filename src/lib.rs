@@ -265,22 +265,22 @@ impl MmapOptions {
 
     /// Returns the configured length, or the length of the provided file.
     fn get_len<T: MmapAsRawDesc>(&self, file: &T) -> Result<usize> {
-        self.len.map_or_else(
-            || {
-                let desc = file.as_raw_desc();
-                let file_len = file_len(desc.0)?;
+        let len = if let Some(len) = self.len {
+            len as u64
+        } else {
+            let desc = file.as_raw_desc();
+            let file_len = file_len(desc.0)?;
 
-                if file_len < self.offset {
-                    return Err(Error::new(
-                        ErrorKind::InvalidData,
-                        "memory map offset is larger than length",
-                    ));
-                }
+            if file_len < self.offset {
+                return Err(Error::new(
+                    ErrorKind::InvalidData,
+                    "memory map offset is larger than length",
+                ));
+            }
 
-                Self::validate_len(file_len - self.offset)
-            },
-            |l| Self::validate_len(l as u64),
-        )
+            file_len - self.offset
+        };
+        Self::validate_len(len)
     }
 
     /// Configures the anonymous memory map to be suitable for a process or thread stack.
