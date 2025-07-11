@@ -70,7 +70,6 @@ use std::fmt;
 #[cfg(not(any(unix, windows)))]
 use std::fs::File;
 use std::io::{Error, ErrorKind, Result};
-use std::mem;
 use std::ops::{Deref, DerefMut};
 #[cfg(unix)]
 use std::os::unix::io::{AsRawFd, RawFd};
