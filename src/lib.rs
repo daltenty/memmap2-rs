@@ -158,6 +158,7 @@ pub struct MmapOptions {
     huge: Option<u8>,
     stack: bool,
     populate: bool,
+    noreserve: bool,
 }
 
 impl MmapOptions {
@@ -329,6 +330,7 @@ impl MmapOptions {
         self.huge = Some(page_bits.unwrap_or(0));
         self
     }
+
     /// Populate (prefault) page tables for a mapping.
     ///
     /// For a file mapping, this causes read-ahead on the file. This will help to reduce blocking on page faults later.
@@ -354,6 +356,34 @@ impl MmapOptions {
     /// ```
     pub fn populate(&mut self) -> &mut Self {
         self.populate = true;
+        self
+    }
+
+    /// Configures the memory map to not use swap memory.
+    /// 
+    /// This flag is ignored if [`vm.overcommit_memory`](https://www.kernel.org/doc/Documentation/vm/overcommit-accounting) is greater than 0.
+    ///
+    /// This option corresponds to the `MAP_NORESERVE` flag on Linux. It has no effect on Windows.
+    ///
+    /// # Example
+    ///
+    /// ``` 
+    /// use memmap2::MmapOptions;
+    /// use std::fs::File;
+    ///
+    /// # fn main() -> std::io::Result<()> {
+    /// let file = File::open("LICENSE-MIT")?;
+    ///
+    /// let mmap = unsafe {
+    ///     MmapOptions::new().noreserve().map(&file)?
+    /// };
+    ///
+    /// assert_eq!(&b"Copyright"[..], &mmap[..9]);
+    /// # Ok(())    
+    /// # }
+    /// ```
+    pub fn noreserve(&mut self) -> &mut Self {
+        self.noreserve = true;
         self
     }
 
@@ -392,7 +422,7 @@ impl MmapOptions {
     pub unsafe fn map<T: MmapAsRawDesc>(&self, file: T) -> Result<Mmap> {
         let desc = file.as_raw_desc();
 
-        MmapInner::map(self.get_len(&file)?, desc.0, self.offset, self.populate)
+        MmapInner::map(self.get_len(&file)?, desc.0, self.offset, self.populate, self.noreserve)
             .map(|inner| Mmap { inner })
     }
 
@@ -409,7 +439,7 @@ impl MmapOptions {
     pub unsafe fn map_exec<T: MmapAsRawDesc>(&self, file: T) -> Result<Mmap> {
         let desc = file.as_raw_desc();
 
-        MmapInner::map_exec(self.get_len(&file)?, desc.0, self.offset, self.populate)
+        MmapInner::map_exec(self.get_len(&file)?, desc.0, self.offset, self.populate, self.noreserve)
             .map(|inner| Mmap { inner })
     }
 
@@ -450,7 +480,7 @@ impl MmapOptions {
     pub unsafe fn map_mut<T: MmapAsRawDesc>(&self, file: T) -> Result<MmapMut> {
         let desc = file.as_raw_desc();
 
-        MmapInner::map_mut(self.get_len(&file)?, desc.0, self.offset, self.populate)
+        MmapInner::map_mut(self.get_len(&file)?, desc.0, self.offset, self.populate, self.noreserve)
             .map(|inner| MmapMut { inner })
     }
 
@@ -485,7 +515,7 @@ impl MmapOptions {
     pub unsafe fn map_copy<T: MmapAsRawDesc>(&self, file: T) -> Result<MmapMut> {
         let desc = file.as_raw_desc();
 
-        MmapInner::map_copy(self.get_len(&file)?, desc.0, self.offset, self.populate)
+        MmapInner::map_copy(self.get_len(&file)?, desc.0, self.offset, self.populate, self.noreserve)
             .map(|inner| MmapMut { inner })
     }
 
@@ -524,7 +554,7 @@ impl MmapOptions {
     pub unsafe fn map_copy_read_only<T: MmapAsRawDesc>(&self, file: T) -> Result<Mmap> {
         let desc = file.as_raw_desc();
 
-        MmapInner::map_copy_read_only(self.get_len(&file)?, desc.0, self.offset, self.populate)
+        MmapInner::map_copy_read_only(self.get_len(&file)?, desc.0, self.offset, self.populate, self.noreserve)
             .map(|inner| Mmap { inner })
     }
 
@@ -544,7 +574,7 @@ impl MmapOptions {
         // See get_len() for details.
         let len = Self::validate_len(len as u64)?;
 
-        MmapInner::map_anon(len, self.stack, self.populate, self.huge)
+        MmapInner::map_anon(len, self.stack, self.populate, self.huge, self.noreserve)
             .map(|inner| MmapMut { inner })
     }
 
@@ -557,7 +587,7 @@ impl MmapOptions {
     pub fn map_raw<T: MmapAsRawDesc>(&self, file: T) -> Result<MmapRaw> {
         let desc = file.as_raw_desc();
 
-        MmapInner::map_mut(self.get_len(&file)?, desc.0, self.offset, self.populate)
+        MmapInner::map_mut(self.get_len(&file)?, desc.0, self.offset, self.populate, self.noreserve)
             .map(|inner| MmapRaw { inner })
     }
 
@@ -572,7 +602,7 @@ impl MmapOptions {
     pub fn map_raw_read_only<T: MmapAsRawDesc>(&self, file: T) -> Result<MmapRaw> {
         let desc = file.as_raw_desc();
 
-        MmapInner::map(self.get_len(&file)?, desc.0, self.offset, self.populate)
+        MmapInner::map(self.get_len(&file)?, desc.0, self.offset, self.populate, self.noreserve)
             .map(|inner| MmapRaw { inner })
     }
 }

@@ -42,6 +42,9 @@ const MAP_HUGE_MASK: libc::c_int = 0;
 #[cfg(not(any(target_os = "linux", target_os = "android")))]
 const MAP_HUGE_SHIFT: libc::c_int = 0;
 
+// todo: How should we cfg this?
+const MAP_NORESERVE: libc::c_int = libc::MAP_NORESERVE;
+
 #[cfg(any(
     target_os = "android",
     all(target_os = "linux", not(target_env = "musl"))
@@ -214,45 +217,49 @@ impl MmapInner {
         }
     }
 
-    pub fn map(len: usize, file: RawFd, offset: u64, populate: bool) -> io::Result<MmapInner> {
+    pub fn map(len: usize, file: RawFd, offset: u64, populate: bool, noreserve: bool) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
+        let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
             len,
             libc::PROT_READ,
-            libc::MAP_SHARED | populate,
+            libc::MAP_SHARED | populate | noreserve,
             file,
             offset,
         )
     }
 
-    pub fn map_exec(len: usize, file: RawFd, offset: u64, populate: bool) -> io::Result<MmapInner> {
+    pub fn map_exec(len: usize, file: RawFd, offset: u64, populate: bool, noreserve: bool) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
+        let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
             len,
             libc::PROT_READ | libc::PROT_EXEC,
-            libc::MAP_SHARED | populate,
+            libc::MAP_SHARED | populate | noreserve,
             file,
             offset,
         )
     }
 
-    pub fn map_mut(len: usize, file: RawFd, offset: u64, populate: bool) -> io::Result<MmapInner> {
+    pub fn map_mut(len: usize, file: RawFd, offset: u64, populate: bool, noreserve: bool) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
+        let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
             len,
             libc::PROT_READ | libc::PROT_WRITE,
-            libc::MAP_SHARED | populate,
+            libc::MAP_SHARED | populate | noreserve,
             file,
             offset,
         )
     }
 
-    pub fn map_copy(len: usize, file: RawFd, offset: u64, populate: bool) -> io::Result<MmapInner> {
+    pub fn map_copy(len: usize, file: RawFd, offset: u64, populate: bool, noreserve: bool) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
+        let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
             len,
             libc::PROT_READ | libc::PROT_WRITE,
-            libc::MAP_PRIVATE | populate,
+            libc::MAP_PRIVATE | populate | noreserve,
             file,
             offset,
         )
@@ -263,12 +270,14 @@ impl MmapInner {
         file: RawFd,
         offset: u64,
         populate: bool,
+        noreserve: bool,
     ) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
+        let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
             len,
             libc::PROT_READ,
-            libc::MAP_PRIVATE | populate,
+            libc::MAP_PRIVATE | populate | noreserve,
             file,
             offset,
         )
@@ -280,6 +289,7 @@ impl MmapInner {
         stack: bool,
         populate: bool,
         huge: Option<u8>,
+        noreserve: bool,
     ) -> io::Result<MmapInner> {
         let stack = if stack { MAP_STACK } else { 0 };
         let populate = if populate { MAP_POPULATE } else { 0 };
@@ -287,10 +297,11 @@ impl MmapInner {
         let hugetlb_size = huge.map_or(0, |mask| {
             (u64::from(mask) & (MAP_HUGE_MASK as u64)) << MAP_HUGE_SHIFT
         }) as i32;
+        let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
             len,
             libc::PROT_READ | libc::PROT_WRITE,
-            libc::MAP_PRIVATE | libc::MAP_ANON | stack | populate | hugetlb | hugetlb_size,
+            libc::MAP_PRIVATE | libc::MAP_ANON | stack | populate | hugetlb | hugetlb_size | noreserve,
             -1,
             0,
         )
