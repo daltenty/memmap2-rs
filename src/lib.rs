@@ -361,12 +361,14 @@ impl MmapOptions {
 
     /// Do not reserve swap space for the memory map.
     ///
-    /// Platforms may reserve swap space for memory maps that are not backed by a file.
+    /// Platforms may reserve swap space for memory maps that are not backed by a file 
+    /// (and file backed private writeable maps, like one created with [`MmapOptions::map_copy`]).
+    /// 
     /// This guarantees that a write to the mapped memory will succeed, even if physical memory is exhausted.
     /// Otherwise, the write to memory could fail (on Linux with a segfault).
     ///
     /// On Linux, this option corresponds to the `MAP_NORESERVE` flag.
-    /// It has effect only if [`vm.overcommit_memory`](https://www.kernel.org/doc/Documentation/vm/overcommit-accounting) is set to 0.
+    /// It has effect only if [`vm.overcommit_memory`](https://www.kernel.org/doc/Documentation/vm/overcommit-accounting) < 2.
     ///
     /// On other platforms, it has no effect.
     ///
