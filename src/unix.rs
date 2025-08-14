@@ -42,8 +42,11 @@ const MAP_HUGE_MASK: libc::c_int = 0;
 #[cfg(not(any(target_os = "linux", target_os = "android")))]
 const MAP_HUGE_SHIFT: libc::c_int = 0;
 
-// todo: How should we cfg this?
+#[cfg(any(target_os = "linux", target_os = "android", target_os = "macos", target_os = "netbsd", target_os = "solaris"))]
 const MAP_NORESERVE: libc::c_int = libc::MAP_NORESERVE;
+
+#[cfg(not(any(target_os = "linux", target_os = "android", target_os = "macos", target_os = "netbsd", target_os = "solaris")))]
+const MAP_NORESERVE: libc::c_int = 0;
 
 #[cfg(any(
     target_os = "android",

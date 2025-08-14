@@ -382,7 +382,7 @@ impl MmapOptions {
     /// let file = File::open("LICENSE-MIT")?;
     ///
     /// let mmap = unsafe {
-    ///     MmapOptions::new().noreserve().map(&file)?
+    ///     MmapOptions::new().no_reserve_swap().map_copy(&file)?
     /// };
     ///
     /// assert_eq!(&b"Copyright"[..], &mmap[..9]);
