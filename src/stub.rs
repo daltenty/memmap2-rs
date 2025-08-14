@@ -32,7 +32,13 @@ impl MmapInner {
         MmapInner::new()
     }
 
-    pub fn map_copy_read_only(_: usize, _: &File, _: u64, _: bool, _: bool) -> io::Result<MmapInner> {
+    pub fn map_copy_read_only(
+        _: usize,
+        _: &File,
+        _: u64,
+        _: bool,
+        _: bool,
+    ) -> io::Result<MmapInner> {
         MmapInner::new()
     }
 

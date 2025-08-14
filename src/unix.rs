@@ -42,10 +42,22 @@ const MAP_HUGE_MASK: libc::c_int = 0;
 #[cfg(not(any(target_os = "linux", target_os = "android")))]
 const MAP_HUGE_SHIFT: libc::c_int = 0;
 
-#[cfg(any(target_os = "linux", target_os = "android", target_os = "macos", target_os = "netbsd", target_os = "solaris"))]
+#[cfg(any(
+    target_os = "linux",
+    target_os = "android",
+    target_os = "macos",
+    target_os = "netbsd",
+    target_os = "solaris"
+))]
 const MAP_NORESERVE: libc::c_int = libc::MAP_NORESERVE;
 
-#[cfg(not(any(target_os = "linux", target_os = "android", target_os = "macos", target_os = "netbsd", target_os = "solaris")))]
+#[cfg(not(any(
+    target_os = "linux",
+    target_os = "android",
+    target_os = "macos",
+    target_os = "netbsd",
+    target_os = "solaris"
+)))]
 const MAP_NORESERVE: libc::c_int = 0;
 
 #[cfg(any(
@@ -220,7 +232,13 @@ impl MmapInner {
         }
     }
 
-    pub fn map(len: usize, file: RawFd, offset: u64, populate: bool, noreserve: bool) -> io::Result<MmapInner> {
+    pub fn map(
+        len: usize,
+        file: RawFd,
+        offset: u64,
+        populate: bool,
+        noreserve: bool,
+    ) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
         let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
@@ -232,7 +250,13 @@ impl MmapInner {
         )
     }
 
-    pub fn map_exec(len: usize, file: RawFd, offset: u64, populate: bool, noreserve: bool) -> io::Result<MmapInner> {
+    pub fn map_exec(
+        len: usize,
+        file: RawFd,
+        offset: u64,
+        populate: bool,
+        noreserve: bool,
+    ) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
         let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
@@ -244,7 +268,13 @@ impl MmapInner {
         )
     }
 
-    pub fn map_mut(len: usize, file: RawFd, offset: u64, populate: bool, noreserve: bool) -> io::Result<MmapInner> {
+    pub fn map_mut(
+        len: usize,
+        file: RawFd,
+        offset: u64,
+        populate: bool,
+        noreserve: bool,
+    ) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
         let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
@@ -256,7 +286,13 @@ impl MmapInner {
         )
     }
 
-    pub fn map_copy(len: usize, file: RawFd, offset: u64, populate: bool, noreserve: bool) -> io::Result<MmapInner> {
+    pub fn map_copy(
+        len: usize,
+        file: RawFd,
+        offset: u64,
+        populate: bool,
+        noreserve: bool,
+    ) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
         let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
@@ -304,7 +340,13 @@ impl MmapInner {
         MmapInner::new(
             len,
             libc::PROT_READ | libc::PROT_WRITE,
-            libc::MAP_PRIVATE | libc::MAP_ANON | stack | populate | hugetlb | hugetlb_size | noreserve,
+            libc::MAP_PRIVATE
+                | libc::MAP_ANON
+                | stack
+                | populate
+                | hugetlb
+                | hugetlb_size
+                | noreserve,
             -1,
             0,
         )
