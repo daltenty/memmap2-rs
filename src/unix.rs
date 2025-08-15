@@ -239,14 +239,14 @@ impl MmapInner {
         file: RawFd,
         offset: u64,
         populate: bool,
-        noreserve: bool,
+        no_reserve: bool,
     ) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
-        let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
+        let no_reserve = if no_reserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
             len,
             libc::PROT_READ,
-            libc::MAP_SHARED | populate | noreserve,
+            libc::MAP_SHARED | populate | no_reserve,
             file,
             offset,
         )
@@ -257,14 +257,14 @@ impl MmapInner {
         file: RawFd,
         offset: u64,
         populate: bool,
-        noreserve: bool,
+        no_reserve: bool,
     ) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
-        let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
+        let no_reserve = if no_reserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
             len,
             libc::PROT_READ | libc::PROT_EXEC,
-            libc::MAP_SHARED | populate | noreserve,
+            libc::MAP_SHARED | populate | no_reserve,
             file,
             offset,
         )
@@ -275,14 +275,14 @@ impl MmapInner {
         file: RawFd,
         offset: u64,
         populate: bool,
-        noreserve: bool,
+        no_reserve: bool,
     ) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
-        let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
+        let no_reserve = if no_reserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
             len,
             libc::PROT_READ | libc::PROT_WRITE,
-            libc::MAP_SHARED | populate | noreserve,
+            libc::MAP_SHARED | populate | no_reserve,
             file,
             offset,
         )
@@ -293,14 +293,14 @@ impl MmapInner {
         file: RawFd,
         offset: u64,
         populate: bool,
-        noreserve: bool,
+        no_reserve: bool,
     ) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
-        let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
+        let no_reserve = if no_reserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
             len,
             libc::PROT_READ | libc::PROT_WRITE,
-            libc::MAP_PRIVATE | populate | noreserve,
+            libc::MAP_PRIVATE | populate | no_reserve,
             file,
             offset,
         )
@@ -311,14 +311,14 @@ impl MmapInner {
         file: RawFd,
         offset: u64,
         populate: bool,
-        noreserve: bool,
+        no_reserve: bool,
     ) -> io::Result<MmapInner> {
         let populate = if populate { MAP_POPULATE } else { 0 };
-        let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
+        let no_reserve = if no_reserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
             len,
             libc::PROT_READ,
-            libc::MAP_PRIVATE | populate | noreserve,
+            libc::MAP_PRIVATE | populate | no_reserve,
             file,
             offset,
         )
@@ -330,7 +330,7 @@ impl MmapInner {
         stack: bool,
         populate: bool,
         huge: Option<u8>,
-        noreserve: bool,
+        no_reserve: bool,
     ) -> io::Result<MmapInner> {
         let stack = if stack { MAP_STACK } else { 0 };
         let populate = if populate { MAP_POPULATE } else { 0 };
@@ -338,7 +338,7 @@ impl MmapInner {
         let hugetlb_size = huge.map_or(0, |mask| {
             (u64::from(mask) & (MAP_HUGE_MASK as u64)) << MAP_HUGE_SHIFT
         }) as i32;
-        let noreserve = if noreserve { MAP_NORESERVE } else { 0 };
+        let no_reserve = if no_reserve { MAP_NORESERVE } else { 0 };
         MmapInner::new(
             len,
             libc::PROT_READ | libc::PROT_WRITE,
@@ -348,7 +348,7 @@ impl MmapInner {
                 | populate
                 | hugetlb
                 | hugetlb_size
-                | noreserve,
+                | no_reserve,
             -1,
             0,
         )
