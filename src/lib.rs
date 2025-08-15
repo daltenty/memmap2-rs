@@ -360,18 +360,17 @@ impl MmapOptions {
     }
 
     /// Do not reserve swap space for the memory map.
-    /// 
+    ///
     /// By default, platforms may reserve swap space for memory maps.
     /// This guarantees that a write to the mapped memory will succeed, even if physical memory is exhausted.
     /// Otherwise, the write to memory could fail (on Linux with a segfault).
     ///
     /// This option requests that no swap space will be allocated for the memory map,
-    /// which can be useful for extremely large maps that are only written to sparsely. 
+    /// which can be useful for extremely large maps that are only written to sparsely.
     ///
-    /// On Linux, this option corresponds to the `MAP_NORESERVE` flag.
-    /// It is ignored if [`vm.overcommit_memory`](https://www.kernel.org/doc/Documentation/vm/overcommit-accounting) is set to 2.
-    ///
-    /// On other platforms, it has no effect.
+    /// This option is currently supported on Linux, Android, macOS, iOS, NetBSD, Solaris and Illumos.
+    /// On those platforms, this option corresponds to the `MAP_NORESERVE` flag.
+    /// On Linux, this option is ignored if [`vm.overcommit_memory`](https://www.kernel.org/doc/Documentation/vm/overcommit-accounting) is set to 2.
     ///
     /// # Example
     ///
@@ -387,7 +386,7 @@ impl MmapOptions {
     /// };
     ///
     /// assert_eq!(&b"Copyright"[..], &mmap[..9]);
-    /// # Ok(())    
+    /// # Ok(())
     /// # }
     /// ```
     pub fn no_reserve_swap(&mut self) -> &mut Self {

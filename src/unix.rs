@@ -47,7 +47,8 @@ const MAP_HUGE_SHIFT: libc::c_int = 0;
     target_os = "android",
     target_os = "macos",
     target_os = "netbsd",
-    target_os = "solaris"
+    target_os = "solaris",
+    target_os = "illumos",
 ))]
 const MAP_NORESERVE: libc::c_int = libc::MAP_NORESERVE;
 
@@ -56,7 +57,8 @@ const MAP_NORESERVE: libc::c_int = libc::MAP_NORESERVE;
     target_os = "android",
     target_os = "macos",
     target_os = "netbsd",
-    target_os = "solaris"
+    target_os = "solaris",
+    target_os = "illumos",
 )))]
 const MAP_NORESERVE: libc::c_int = 0;
 
